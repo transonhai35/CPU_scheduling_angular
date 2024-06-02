@@ -1,0 +1,100 @@
+.gantt-base{
+    display: inline-block;
+    margin-bottom: 2px;
+    margin-right: 2px;
+    text-align: center;
+    color: white;
+    padding: 15px 0;
+}
+
+// Bảng màu các công việc từ 0 đến 9
+$colors: transparent #9C0000 darkgreen #505050 #171515 #0000E6 #40A800 #720E9E #c45608 #634d40;
+@for $i from 0 through 9 {
+    .gantt-sm-#{$i} {
+        @extend .gantt-base;
+        background-color: nth($colors, $i+1);
+        height: 50px;
+        width: 12px;
+    }
+    .gantt-lg-#{$i} {
+        @extend .gantt-base;
+        background-color: nth($colors, $i+1);
+        height: 55px;
+        width: 20px;
+    }
+}
+
+
+
+.border{
+    border: 2px solid darkgray;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    background-color: rgb(251,251,251);
+
+    min-height: 105px;
+}
+
+.ttable{
+    margin: 0;
+    font-size: 14px;
+}
+
+.container-fluid {
+  padding: 10px;
+}
+
+.space {
+  height: 52px;
+}
+
+.example-button-row {
+  display: flex;
+  justify-content: center;
+}
+
+.example-button-row .mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+}
+
+
+.example-label{
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 80px;
+  width: 100%;
+  padding: 12px;
+  &__img {
+    width: 70px;
+    height: 70px;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 8px;
+  }
+}
+

@@ -1,0 +1,311 @@
+<header class="header">
+  <div class="header__logo">
+    <img class="header__img" src="https://www.senviet.art/wp-content/uploads/edd/2021/12/dai-hoc-bach-khoa-ha-noi.jpg" alt="">
+  </div>
+  <div class="header__title">CPU SCHEDULING</div>
+</header>
+
+<div class="container-fluid">
+
+  <div class="space" style="margin-bottom: 60px;"></div>
+
+
+  <div class="row">
+    <div class="col-12">
+      <div class="table-responsive border" style="padding: 12px;">
+        <table class="table table-sm" style="font-size:14px; margin: 0;">
+          <thead class="thead-dark">
+            <tr>
+              <th>Num of jobs</th>
+              <th>Algorithm</th>
+              <th>Quantum</th>
+              <th>Sim Speed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <!--Chọn số lượng công việc-->
+                <mat-form-field  style="width: 100%;">
+                  <mat-label >Select</mat-label>
+                  <mat-select [(ngModel)]="jobCount" [disabled]="running" (ngModelChange)="handleChanged()">
+                    <mat-option value="2">2</mat-option>
+                    <mat-option value="3">3</mat-option>
+                    <mat-option value="4">4</mat-option>
+                    <mat-option value="5">5</mat-option>
+                    <mat-option value="6">6</mat-option>
+                    <mat-option value="7">7</mat-option>
+                    <mat-option value="8">8</mat-option>
+                    <mat-option value="9">9</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <!--Chọn thuật toán-->
+                <mat-form-field  style="width: 100%;">
+                  <mat-label >Select</mat-label>
+                  <mat-select [(ngModel)]="algo" [disabled]="running" (ngModelChange)="handleChanged()">
+                    <mat-option value="fcfs">First Come First Serve</mat-option>
+                    <mat-option value="sjf">Shortest Job First</mat-option>
+                    <mat-option value="strf">Shortest Remaining Time First</mat-option>
+                    <mat-option value="p">Priority</mat-option>
+                    <mat-option value="pp">Preemptive Priority</mat-option>
+                    <mat-option value="rr">Round Robin</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <!--Chọn quantum chỉ áp dụng với thuật toán RoundRobin-->
+                <mat-form-field  style="width: 100%;">
+                  <mat-label >Select</mat-label>
+                  <mat-select [(ngModel)]="quantum" [disabled]="running" (ngModelChange)="handleChanged()">
+                    <mat-option value="2">2</mat-option>
+                    <mat-option value="3">3</mat-option>
+                    <mat-option value="4">4</mat-option>
+                    <mat-option value="5">5</mat-option>
+                    <mat-option value="6">6</mat-option>
+                    <mat-option value="7">7</mat-option>
+                    <mat-option value="8">8</mat-option>
+                    <mat-option value="9">9</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <!--Điều chỉnh tốc độ của chương trình -->
+                <mat-form-field  style="width: 100%;">
+                  <mat-label >Select</mat-label>
+                  <mat-select [(ngModel)]="quantum" [disabled]="running" (ngModelChange)="handleChanged()">
+                    <mat-option value="200">Very fast</mat-option>
+                    <mat-option value="500">fast</mat-option>
+                    <mat-option value="1000">normal</mat-option>
+                    <mat-option value="5000">slow</mat-option>
+                    <mat-option value="10000">very slow</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!--Nút điều hướng-->
+
+
+        <table class="table table-sm" style="font-size:14px; margin: 0;">
+          <thead class="thead-dark">
+            <tr>
+              <th><div class="example-label">Controller</div></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>
+                  <div class="example-button-row">
+                    <button mat-raised-button (click)="randomJob()">
+                      <div class="fas fa-redo"></div> New Data
+                    </button>
+                    <button mat-raised-button (click)="reset()">
+                      <div class="fas fa-fast-backward"></div> Reset
+                    </button>
+                    <button mat-raised-button (click)="play()">
+                      <div class="fas fa-play"></div> Play
+                    </button>
+                    <button mat-raised-button (click)="stop()">
+                      <div class="fas fa-pause"></div> Pause
+                    </button>
+                    <button mat-raised-button (click)="next()">
+                      <div class="fas fa-step-forward"></div> Step
+                    </button>
+                    <button mat-raised-button  (click)="finish()">
+                      <div class="fas fa-fast-forward"></div> Finish
+                    </button>
+                    <button mat-raised-button  (click)="openModal()" [disabled]="running">
+                      <div class="fas fa-fast-forward"></div> Import Data
+                    </button>
+                  </div>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <div class="space"></div>
+
+
+
+  <div class="table-responsive border" style="padding: 12px;">
+    <table class="table table-sm table-hover ttable">
+      <thead class="thead-dark">
+        <tr>
+          <th colspan="10" style="text-align: center; font-size: 15px;">Job Pool</th>
+        </tr>
+        <tr>
+          <th>#</th>
+          <th>Arrive</th>
+          <th>Burst</th>
+          <th>Priority</th>
+          <th>Start</th>
+          <th>Finish</th>
+          <th>Remain</th>
+          <th>Turnaround</th>
+          <th>Wait</th>
+          <th>%</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of simulation.jobs; let idx = index">
+          <td>{{ item.id }}</td>
+          <td>{{ item.arrivalTime }}</td>
+          <td>{{ item.burst }}</td>
+          <td>{{ item.priority }}</td>
+          <td>{{ item.startTime }}</td>
+          <td>{{ item.finishTime }}</td>
+          <td>{{ item.remaining }}</td>
+          <td>{{ item.getTurnaroundTime(simulation.time) }}</td>
+          <td>{{ item.getWaitingTime(simulation.time) }}</td>
+          <td>{{ item.percent }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+<!--Bảng nhập dữ liệu từ bàn phím-->
+  <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Import Job Data</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+           <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Arrival Time</th>
+                <th scope="col">Burst</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Destroy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr    *ngFor="let item of jobsDemo; let i=index" >
+                <th scope="row">{{i+1}}</th>
+                <td><input matInput  [(ngModel)] = "item.arrivalTime" type="number" placeholder="Arrival Time" min="0" max="30"></td>
+                <td><input [(ngModel)] = "item.burst" type="number" placeholder="Burst" min="0" max="12"></td>
+                <td><input [(ngModel)] = "item.priority" type="number" placeholder="Priority" min="0" max="125"></td>
+                <td>
+                  <button mat-button style="margin-left: 8px;" (click)="destroyRow(i)" [disabled]="running">
+                    <div class="fa-solid fa-circle-xmark"></div> Destroy
+                  </button>
+                </td>
+              </tr>
+
+              <button mat-raised-button style="margin-top: 12px;" (click)="insertRow()" [disabled]="running">
+                <div class="fa-solid fa-plus"></div> Add
+              </button>
+                <!-- <button (click)="addRow()">Add</button> -->
+
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="saveJob()">Save all data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="space"></div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="table-responsive border" style="padding: 12px;">
+        <table class="table table-sm table-hover" style="font-size:14px; margin: 0;">
+          <thead class="thead-dark">
+            <tr>
+              <th colspan="6" style="text-align: center; font-size: 15px;">CPU</th>
+            </tr>
+            <tr>
+              <th>Job</th>
+              <th>Time</th>
+              <th>Idle time</th>
+              <th>Utilization</th>
+              <th>Average Waiting</th>
+              <th>Average Turnaround</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ simulation.jobText }}</td>
+              <td>{{ simulation.time }}</td>
+              <td>{{ simulation.idleTime }}</td>
+              <td>{{ simulation.utilization }} % </td>
+              <td>{{ simulation.averageWait }}</td>
+              <td>{{ simulation.averageTurnaround }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="table-responsive border" style="padding: 12px;">
+        <table class="table table-sm table-hover" style="font-size:14px; margin: 0;">
+          <thead class="thead-dark">
+            <tr>
+              <th style="text-align: center; font-size: 15px;">Ready Queue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div>
+                  <span class="fas fa-chevron-right" style="font-size: 20px; margin-right:10px;"></span>
+                  <div *ngFor="let item of simulation.readyQueue" [ngClass]='"gantt-lg-" + item.id'>{{ item.id }}</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="table-responsive border" style="padding: 12px;">
+    <table class="table table-sm table-hover" style="font-size:14px; margin: 0;">
+      <thead class="thead-dark">
+        <tr>
+          <th style="text-align: center; font-size: 15px;">Gantt Chart</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div>
+              <!--Mô tả chỉ số các công việc đang chạy-->
+              <span class="fas fa-chevron-right" style="font-size: 20px; margin-right:10px;"></span>
+              <div *ngFor="let item of simulation.ganttChart" [ngClass]='"gantt-sm-" + item'>{{ item }}</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+
+
+
